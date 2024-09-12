@@ -1,0 +1,22 @@
+CREATE TABLE chess_games (
+    id varchar(10) PRIMARY KEY,
+    event varchar(50),
+    site varchar(30),
+    game_date date,
+    white varchar(30),
+    black varchar(30),
+    result varchar(7),
+    utcdate date,
+    utctime time,
+    whiteelo INT CHECK (whiteelo > 0),
+    blackelo INT CHECK (blackelo > 0),
+    whiteratingdiff INT,
+    blackratingdiff INT,
+    whitetitle varchar(5),
+    blacktitle varchar(5),
+    variant varchar(32),
+    timecontrol varchar(20),
+    eco varchar(10),
+    opening varchar(100),
+    termination varchar(32)
+);
