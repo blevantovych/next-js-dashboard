@@ -215,3 +215,55 @@ export async function fetchFilteredCustomers(query: string) {
     throw new Error("Failed to fetch customer table.");
   }
 }
+
+export async function fetchGamesPerYear() {
+  try {
+    const data = await sql<{ year: string; count: number }>`
+		SELECT date_part('year', date) as year, count(*)
+		FROM chess_games
+		GROUP BY date_part('year', date)
+		ORDER BY date_part('year', date) 
+	  `;
+
+    return data;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch chess_games table.");
+  }
+}
+
+export async function fetchOpenings(playerName: string) {
+  try {
+    const data = await sql<{ opening: string; count: number }>`
+		SELECT opening, count(*)
+		FROM chess_games
+        WHERE white = ${playerName} OR black = ${playerName}
+		GROUP BY opening
+		ORDER BY count(*) DESC
+        LIMIT 20
+	  `;
+
+    return data;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch chess_games table.");
+  }
+}
+
+export async function fetchGamesWithTitledPlayers(playerName: string) {
+  try {
+    const data = await sql<{ opening: string; count: number }>`
+		SELECT opening, count(*)
+		FROM chess_games
+        WHERE white = ${playerName} OR black = ${playerName}
+		GROUP BY whitetitle
+		ORDER BY count(*) DESC
+        LIMIT 20
+	  `;
+
+    return data;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch chess_games table.");
+  }
+}

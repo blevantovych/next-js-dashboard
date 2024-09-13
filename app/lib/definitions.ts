@@ -86,3 +86,13 @@ export type InvoiceForm = {
   amount: number;
   status: 'pending' | 'paid';
 };
+
+export type Game = {
+  id: string;
+  name: string;
+  email: string;
+  image_url: string;
+  total_invoices: number;
+  total_pending: number;
+  total_paid: number;
+};

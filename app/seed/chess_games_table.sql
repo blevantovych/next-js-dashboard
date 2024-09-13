@@ -2,7 +2,7 @@ CREATE TABLE chess_games (
     id varchar(10) PRIMARY KEY,
     event varchar(50),
     site varchar(30),
-    game_date date,
+    date date,
     white varchar(30),
     black varchar(30),
     result varchar(7),
@@ -18,5 +18,6 @@ CREATE TABLE chess_games (
     timecontrol varchar(20),
     eco varchar(10),
     opening varchar(100),
-    termination varchar(32)
+    termination varchar(32),
+    moves jsonb
 );
