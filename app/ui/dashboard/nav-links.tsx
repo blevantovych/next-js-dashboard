@@ -4,6 +4,7 @@ import {
   UserGroupIcon,
   HomeIcon,
   BookOpenIcon,
+  ChevronUpIcon,
   DocumentDuplicateIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
@@ -15,6 +16,11 @@ import clsx from "clsx";
 const links = [
   { name: "Home", href: "/dashboard", icon: HomeIcon },
   { name: "Openings", href: "/dashboard/openings", icon: BookOpenIcon },
+  {
+    name: "Titled Games",
+    href: "/dashboard/games-with-titled-players",
+    icon: ChevronUpIcon,
+  },
   {
     name: "Invoices",
     href: "/dashboard/invoices",

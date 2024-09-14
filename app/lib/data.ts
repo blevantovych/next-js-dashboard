@@ -250,15 +250,72 @@ export async function fetchOpenings(playerName: string) {
   }
 }
 
-export async function fetchGamesWithTitledPlayers(playerName: string) {
+export async function fetchGamesWithTitledPlayers(
+  playerName: string,
+  event?: string
+) {
+  console.log({ event });
   try {
-    const data = await sql<{ opening: string; count: number }>`
-		SELECT opening, count(*)
-		FROM chess_games
-        WHERE white = ${playerName} OR black = ${playerName}
-		GROUP BY whitetitle
-		ORDER BY count(*) DESC
-        LIMIT 20
+    const data = await sql<{
+      opponent_title: string;
+      games_played: number;
+      wins: number;
+      losses: number;
+      draws: number;
+      net_wins: number;
+      win_percentage: number;
+      points_percentage: number;
+      average_opponent_rating: number;
+    }>`
+        SELECT
+        opponent_title,
+        COUNT(*) AS games_played,
+        -- Count of wins
+        COUNT(CASE WHEN result = 'win' THEN 1 END) AS wins,
+        -- Count of losses
+        COUNT(CASE WHEN result = 'loss' THEN 1 END) AS losses,
+        -- Count of draws
+        COUNT(CASE WHEN result = 'draw' THEN 1 END) AS draws,
+        -- Net wins (wins - losses)
+        COUNT(CASE WHEN result = 'win' THEN 1 END) - COUNT(CASE WHEN result = 'loss' THEN 1 END) AS net_wins,
+        -- Win percentage
+        ROUND((COUNT(CASE WHEN result = 'win' THEN 1 END) * 100.0) / COUNT(*), 2) AS win_percentage,
+        -- Points percentage
+        ROUND((
+            (COUNT(CASE WHEN result = 'win' THEN 1 END) + 0.5 * COUNT(CASE WHEN result = 'draw' THEN 1 END))
+            * 100.0
+        ) / COUNT(*), 2) AS points_percentage,
+        -- Average opponent rating
+        ROUND(AVG(opponent_rating), 2) AS average_opponent_rating
+        FROM (
+            -- Subquery to determine opponent's title and result from playerName's perspective
+            SELECT 
+                CASE
+                    WHEN white = ${playerName} THEN blacktitle
+                    ELSE whitetitle
+                END AS opponent_title,
+                CASE
+                    WHEN white = ${playerName} AND result = '1-0' THEN 'win'       -- playerName won as white
+                    WHEN white = ${playerName} AND result = '0-1' THEN 'loss'      -- playerName lost as white
+                    WHEN white = ${playerName} AND result = '1/2-1/2' THEN 'draw'  -- playerName drew as white
+                    WHEN black = ${playerName} AND result = '0-1' THEN 'win'       -- playerName won as black
+                    WHEN black = ${playerName} AND result = '1-0' THEN 'loss'      -- playerName lost as black
+                    WHEN result = '1/2-1/2' THEN 'draw'                            -- playerName drew as black
+                    ELSE NULL
+                END AS result,
+                CASE
+                    WHEN white = ${playerName} THEN blackelo
+                    ELSE whiteelo
+                END AS opponent_rating
+            FROM chess_games
+            WHERE
+                (white = ${playerName} OR black = ${playerName})
+                AND event = ${event}
+                -- AND date between '2016-01-01' AND '2020-01-01'
+                -- AND date between '2020-01-01' AND '2024-09-15'
+        ) AS sub
+        GROUP BY opponent_title
+        ORDER BY games_played DESC;
 	  `;
 
     return data;
