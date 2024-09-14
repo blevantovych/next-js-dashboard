@@ -209,6 +209,7 @@ export async function fetchFilteredCustomers(query: string) {
       total_paid: formatCurrency(customer.total_paid),
     }));
 
+    console.log(data.rows);
     return customers;
   } catch (err) {
     console.error("Database Error:", err);
@@ -250,23 +251,25 @@ export async function fetchOpenings(playerName: string) {
   }
 }
 
+export type TitledOpponetStats = {
+  opponent_title: string;
+  games_played: number;
+  wins: number;
+  losses: number;
+  draws: number;
+  net_wins: number;
+  win_percentage: number;
+  points_percentage: number;
+  average_opponent_rating: number;
+};
+
 export async function fetchGamesWithTitledPlayers(
   playerName: string,
   event?: string
 ) {
   console.log({ event });
   try {
-    const data = await sql<{
-      opponent_title: string;
-      games_played: number;
-      wins: number;
-      losses: number;
-      draws: number;
-      net_wins: number;
-      win_percentage: number;
-      points_percentage: number;
-      average_opponent_rating: number;
-    }>`
+    const data = await sql<TitledOpponetStats>`
         SELECT
         opponent_title,
         COUNT(*) AS games_played,
