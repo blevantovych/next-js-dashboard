@@ -286,7 +286,7 @@ export async function fetchGamesWithTitledPlayers(
             * 100.0
         ) / COUNT(*), 2) AS points_percentage,
         -- Average opponent rating
-        ROUND(AVG(opponent_rating), 2) AS average_opponent_rating
+        ROUND(AVG(opponent_rating), 0) AS average_opponent_rating
         FROM (
             -- Subquery to determine opponent's title and result from playerName's perspective
             SELECT 

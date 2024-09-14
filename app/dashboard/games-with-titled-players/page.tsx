@@ -1,5 +1,12 @@
 import { fetchGamesWithTitledPlayers } from "@/app/lib/data";
 import { lusitana } from "@/app/ui/fonts";
+import {
+  Table,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export default async function Page() {
   const results = await fetchGamesWithTitledPlayers(
@@ -74,61 +81,38 @@ export default async function Page() {
 
         {/* Table view for larger devices */}
         <div className="hidden lg:block overflow-x-auto">
-          <table className="min-w-full border-collapse">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 border-b-2 text-left">
-                  Opponent Title
-                </th>
-                <th className="px-4 py-2 border-b-2 text-right">
-                  Average Opponent Rating
-                </th>
-                <th className="px-4 py-2 border-b-2 text-right">
-                  Games Played
-                </th>
-                <th className="px-4 py-2 border-b-2 text-right">Wins</th>
-                <th className="px-4 py-2 border-b-2 text-right">Losses</th>
-                <th className="px-4 py-2 border-b-2 text-right">Draws</th>
-                <th className="px-4 py-2 border-b-2 text-right">Net Wins</th>
-                <th className="px-4 py-2 border-b-2 text-right">Win %</th>
-                <th className="px-4 py-2 border-b-2 text-right">Points %</th>
-              </tr>
-            </thead>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Opponent Title</TableHead>
+                <TableHead>Average Opponent Rating</TableHead>
+                <TableHead>Games Played</TableHead>
+                <TableHead>Wins</TableHead>
+                <TableHead>Losses</TableHead>
+                <TableHead>Draws</TableHead>
+                <TableHead>Net Wins</TableHead>
+                <TableHead>Win %</TableHead>
+                <TableHead>Points %</TableHead>
+              </TableRow>
+            </TableHeader>
             <tbody>
               {data.map((row, index) => (
-                <tr
-                  key={index}
-                  className={index % 2 === 0 ? "bg-gray-50" : "bg-white"}
-                >
-                  <td className="px-4 py-2 border-b text-left">
-                    {row.opponent_title || "No Title"}
-                  </td>
-                  <td className="px-4 py-2 border-b text-right">
-                    {row.average_opponent_rating}
-                  </td>
-                  <td className="px-4 py-2 border-b text-right">
-                    {row.games_played}
-                  </td>
-                  <td className="px-4 py-2 border-b text-right">{row.wins}</td>
-                  <td className="px-4 py-2 border-b text-right">
-                    {row.losses}
-                  </td>
-                  <td className="px-4 py-2 border-b text-right">{row.draws}</td>
-                  <td
-                    className={`px-4 py-2 border-b text-right ${getNetWinsClass(row.net_wins)}`}
-                  >
+                <TableRow key={index}>
+                  <TableCell>{row.opponent_title || "No Title"}</TableCell>
+                  <TableCell>{row.average_opponent_rating}</TableCell>
+                  <TableCell>{row.games_played}</TableCell>
+                  <TableCell>{row.wins}</TableCell>
+                  <TableCell>{row.losses}</TableCell>
+                  <TableCell>{row.draws}</TableCell>
+                  <TableCell className={getNetWinsClass(row.net_wins)}>
                     {row.net_wins}
-                  </td>
-                  <td className="px-4 py-2 border-b text-right">
-                    {row.win_percentage}%
-                  </td>
-                  <td className="px-4 py-2 border-b text-right">
-                    {row.points_percentage}%
-                  </td>
-                </tr>
+                  </TableCell>
+                  <TableCell>{row.win_percentage}%</TableCell>
+                  <TableCell>{row.points_percentage}%</TableCell>
+                </TableRow>
               ))}
             </tbody>
-          </table>
+          </Table>
         </div>
       </div>
     </main>
