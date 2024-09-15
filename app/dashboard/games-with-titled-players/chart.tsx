@@ -245,7 +245,7 @@ export function Chart() {
         </div>
       </CardHeader>
       <CardContent className="px-2 sm:p-6">
-        <ResponsiveContainer width="100%" height={500}>
+        <ChartContainer config={chartConfig}>
           <BarChart
             accessibilityLayer
             data={chartData}
@@ -286,7 +286,7 @@ export function Chart() {
             />
             <Bar dataKey={activeChart} fill={`var(--color-${activeChart})`} />
           </BarChart>
-        </ResponsiveContainer>
+        </ChartContainer>
       </CardContent>
     </Card>
   );
