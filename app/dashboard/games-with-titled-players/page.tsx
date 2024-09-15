@@ -6,6 +6,7 @@ import {
 import { lusitana } from "@/app/ui/fonts";
 import { DataTable } from "@/components/ui/data-table";
 import { columns, getNetWinsClass } from "./columns";
+import { Chart } from "./chart";
 
 function convertNumericValuesToNumber(data: TitledOpponetStats[]) {
   return data.map(
@@ -38,7 +39,6 @@ export default async function Page() {
     "bodya17",
     "Rated bullet game"
   );
-  await fetchFilteredCustomers("");
   const data = convertNumericValuesToNumber(results.rows);
 
   return (
@@ -94,7 +94,18 @@ export default async function Page() {
           ))}
         </div>
         <DataTable columns={columns} data={data} />
+        <Chart />
       </div>
     </main>
   );
 }
+// <Chart
+//   data={[
+//     { month: "January", desktop: 186, mobile: 80 },
+//     { month: "February", desktop: 305, mobile: 200 },
+//     { month: "March", desktop: 237, mobile: 120 },
+//     { month: "April", desktop: 73, mobile: 190 },
+//     { month: "May", desktop: 209, mobile: 130 },
+//     { month: "June", desktop: 214, mobile: 140 },
+//   ]}
+// />
