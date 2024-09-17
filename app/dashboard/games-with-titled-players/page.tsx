@@ -2,12 +2,29 @@ import {
   fetchFilteredCustomers,
   fetchGamesPerDay,
   fetchGamesWithTitledPlayers,
+  fetchRatingChange,
   TitledOpponetStats,
 } from "@/app/lib/data";
 import { lusitana } from "@/app/ui/fonts";
 import { DataTable } from "@/components/ui/data-table";
 import { columns, getNetWinsClass } from "./columns";
 import { Chart } from "./chart";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { RatingChart } from "./rating-chart";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 function formatDate(date: Date): string {
   const year = date.getFullYear();
@@ -66,16 +83,20 @@ function convertNumericValuesToNumber(data: TitledOpponetStats[]) {
     })
   );
 }
-
 export default async function Page() {
+  const playerName = "bodya17";
   const results = await fetchGamesWithTitledPlayers(
-    "bodya17",
+    playerName,
     "Rated bullet game"
   );
-  const gamesPerDay = await fetchGamesPerDay("bodya17");
+  const gamesPerDay = await fetchGamesPerDay(playerName);
   const gamesPerDayFormatted = formatGamesPerDayData(gamesPerDay.rows);
-  console.log(gamesPerDayFormatted.slice(0, 5));
   const data = convertNumericValuesToNumber(results.rows);
+  const ratingChangeData = await fetchRatingChange(playerName, "bullet");
+  const ratingChange = ratingChangeData.rows.map(({ date, rating }) => ({
+    date: formatDate(date),
+    rating,
+  }));
 
   return (
     <main>
@@ -130,7 +151,33 @@ export default async function Page() {
           ))}
         </div>
         <DataTable columns={columns} data={data} />
+        <Card className="my-4">
+          <CardHeader>
+            <CardTitle>Hot days</CardTitle>
+            <CardDescription>
+              number of days I played more than 50 games{" "}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>{gamesPerDayFormatted.length}</CardContent>
+        </Card>
         <Chart chartData={gamesPerDayFormatted} />
+        <RatingChart chartData={ratingChange} />
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Date</TableHead>
+              <TableHead>Rating</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {ratingChange.map(({ date, rating }) => (
+              <TableRow>
+                <TableCell>{date}</TableCell>
+                <TableCell>{rating}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
       </div>
     </main>
   );

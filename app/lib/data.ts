@@ -356,7 +356,7 @@ export async function fetchGamesPerDay(playerName: string, event?: string) {
                     ELSE NULL
                 END AS result
             FROM chess_games
-            WHERE (white = ${playerName} OR black = ${playerName}) AND date >= '2023-01-01'::date
+            WHERE (white = ${playerName} OR black = ${playerName}) AND date >= '2022-01-01' AND date <= '2023-01-01'
         ) as sub
         GROUP BY date
         ORDER BY date;
@@ -369,5 +369,34 @@ export async function fetchGamesPerDay(playerName: string, event?: string) {
   }
 }
 
-// -- WHERE (white = ${playerName} OR black = ${playerName})
-// -- AND date >= '2024-01-01'::date
+export async function fetchRatingChange(
+  playerName: string,
+  type: "blitz" | "bullet"
+) {
+  const event = type === "blitz" ? "Rated blitz game" : "Rated bullet game";
+  try {
+    const data = await sql<{
+      date: Date;
+      rating: number;
+    }>`
+        WITH ranked_rows AS (
+            SELECT *,
+                   ROW_NUMBER() OVER (PARTITION BY date ORDER BY date) AS rn
+            FROM chess_games
+            WHERE (white = ${playerName} OR black = ${playerName}) AND event = ${event}
+        )
+        SELECT date,
+                CASE
+                    WHEN white = ${playerName} THEN whiteelo
+                    ELSE blackelo
+                END AS rating
+        FROM ranked_rows
+        WHERE rn = 1;
+	  `;
+
+    return data;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch chess_games table.");
+  }
+}
