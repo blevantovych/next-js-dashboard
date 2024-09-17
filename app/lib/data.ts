@@ -327,3 +327,47 @@ export async function fetchGamesWithTitledPlayers(
     throw new Error("Failed to fetch chess_games table.");
   }
 }
+
+export async function fetchGamesPerDay(playerName: string, event?: string) {
+  try {
+    const data = await sql<{
+      date: Date;
+      count: string;
+      draws: string;
+      losses: string;
+      wins: string;
+    }>`
+        SELECT
+            date,
+            count(*), 
+            COUNT(CASE WHEN result = 'win' THEN 1 END) AS wins,
+            COUNT(CASE WHEN result = 'loss' THEN 1 END) AS losses,
+            COUNT(CASE WHEN result = 'draw' THEN 1 END) AS draws
+        FROM (
+            SELECT 
+                date,
+                CASE
+                    WHEN white = ${playerName} AND result = '1-0' THEN 'win'       -- playerName won as white
+                    WHEN white = ${playerName} AND result = '0-1' THEN 'loss'      -- playerName lost as white
+                    WHEN white = ${playerName} AND result = '1/2-1/2' THEN 'draw'  -- playerName drew as white
+                    WHEN black = ${playerName} AND result = '0-1' THEN 'win'       -- playerName won as black
+                    WHEN black = ${playerName} AND result = '1-0' THEN 'loss'      -- playerName lost as black
+                    WHEN result = '1/2-1/2' THEN 'draw'                            -- playerName drew as black
+                    ELSE NULL
+                END AS result
+            FROM chess_games
+            WHERE (white = ${playerName} OR black = ${playerName}) AND date >= '2023-01-01'::date
+        ) as sub
+        GROUP BY date
+        ORDER BY date;
+	  `;
+
+    return data;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch chess_games table.");
+  }
+}
+
+// -- WHERE (white = ${playerName} OR black = ${playerName})
+// -- AND date >= '2024-01-01'::date

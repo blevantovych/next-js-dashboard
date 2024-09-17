@@ -1,5 +1,6 @@
 import {
   fetchFilteredCustomers,
+  fetchGamesPerDay,
   fetchGamesWithTitledPlayers,
   TitledOpponetStats,
 } from "@/app/lib/data";
@@ -7,6 +8,38 @@ import { lusitana } from "@/app/ui/fonts";
 import { DataTable } from "@/components/ui/data-table";
 import { columns, getNetWinsClass } from "./columns";
 import { Chart } from "./chart";
+
+function formatDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based, so add 1
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function formatGamesPerDayData(
+  gamesPerDay: {
+    date: Date;
+    count: string;
+    draws: string;
+    losses: string;
+    wins: string;
+  }[]
+): {
+  date: string;
+  count: number;
+  draws: number;
+  wins: number;
+  losses: number;
+}[] {
+  return gamesPerDay.map(({ date, count, draws, wins, losses }) => ({
+    date: formatDate(date),
+    count: Number(count),
+    draws: Number(draws),
+    wins: Number(wins),
+    losses: Number(losses),
+  }));
+}
 
 function convertNumericValuesToNumber(data: TitledOpponetStats[]) {
   return data.map(
@@ -39,6 +72,9 @@ export default async function Page() {
     "bodya17",
     "Rated bullet game"
   );
+  const gamesPerDay = await fetchGamesPerDay("bodya17");
+  const gamesPerDayFormatted = formatGamesPerDayData(gamesPerDay.rows);
+  console.log(gamesPerDayFormatted.slice(0, 5));
   const data = convertNumericValuesToNumber(results.rows);
 
   return (
@@ -94,7 +130,7 @@ export default async function Page() {
           ))}
         </div>
         <DataTable columns={columns} data={data} />
-        <Chart />
+        <Chart chartData={gamesPerDayFormatted} />
       </div>
     </main>
   );
