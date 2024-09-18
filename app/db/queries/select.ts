@@ -71,29 +71,37 @@ export const getTitledOpponentStats = async (
     .with(subquery)
     .select({
       opponent_title: subquery.opponent_title,
-      games_played: sql<number>`COUNT(*)`.as("games_played"),
-      wins: sql<number>`COUNT(CASE WHEN result = 'win' THEN 1 END)`.as("wins"),
-      losses: sql<number>`COUNT(CASE WHEN result = 'loss' THEN 1 END)`.as(
-        "losses"
-      ),
-      draws: sql<number>`COUNT(CASE WHEN result = 'draw' THEN 1 END)`.as(
-        "draws"
-      ),
+      games_played: sql<number>`COUNT(*)`.mapWith(Number).as("games_played"),
+      wins: sql<number>`COUNT(CASE WHEN result = 'win' THEN 1 END)`
+        .mapWith(Number)
+        .as("wins"),
+      losses: sql<number>`COUNT(CASE WHEN result = 'loss' THEN 1 END)`
+        .mapWith(Number)
+        .as("losses"),
+      draws: sql<number>`COUNT(CASE WHEN result = 'draw' THEN 1 END)`
+        .mapWith(Number)
+        .as("draws"),
       net_wins: sql<number>`
         COUNT(CASE WHEN result = 'win' THEN 1 END) - COUNT(CASE WHEN result = 'loss' THEN 1 END)
-      `.as("net_wins"),
+      `
+        .mapWith(Number)
+        .as("net_wins"),
       win_percentage: sql<number>`
         ROUND((COUNT(CASE WHEN result = 'win' THEN 1 END) * 100.0) / COUNT(*), 2)
-      `.as("win_percentage"),
+      `
+        .mapWith(Number)
+        .as("win_percentage"),
       points_percentage: sql<number>`
         ROUND((
           (COUNT(CASE WHEN result = 'win' THEN 1 END) + 0.5 * COUNT(CASE WHEN result = 'draw' THEN 1 END))
           * 100.0
         ) / COUNT(*), 2)
-      `.as("points_percentage"),
-      average_opponent_rating: sql<number>`ROUND(AVG(opponent_rating), 0)`.as(
-        "average_opponent_rating"
-      ),
+      `
+        .mapWith(Number)
+        .as("points_percentage"),
+      average_opponent_rating: sql<number>`ROUND(AVG(opponent_rating), 0)`
+        .mapWith(Number)
+        .as("average_opponent_rating"),
     })
     .from(subquery)
     .groupBy(subquery.opponent_title)
