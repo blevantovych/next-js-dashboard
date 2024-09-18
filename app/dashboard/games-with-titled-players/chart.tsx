@@ -1,13 +1,7 @@
 "use client";
 
 import * as React from "react";
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import {
   Card,
@@ -46,13 +40,12 @@ const chartConfig = {
 export function Chart({
   chartData,
 }: {
-  chartData: { date: string; count: number }[];
+  chartData: { date: string; total_games: number }[];
 }) {
-
   const total = React.useMemo(
     () => ({
       // desktop: chartData.reduce((acc, curr) => acc + curr.desktop, 0),
-      games: chartData.reduce((acc, curr) => acc + curr.count, 0),
+      games: chartData.reduce((acc, curr) => acc + curr.total_games, 0),
     }),
     []
   );
@@ -100,7 +93,7 @@ export function Chart({
                 });
               }}
             />
-             <YAxis />
+            <YAxis />
             <ChartTooltip
               content={
                 <ChartTooltipContent

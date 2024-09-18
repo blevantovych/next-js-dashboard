@@ -1,0 +1,154 @@
+{
+  "id": "f0f69973-622a-4d8d-a8a5-c8de0e431386",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.chess_games": {
+      "name": "chess_games",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(10)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "event": {
+          "name": "event",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "site": {
+          "name": "site",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "date": {
+          "name": "date",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "white": {
+          "name": "white",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "black": {
+          "name": "black",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "result": {
+          "name": "result",
+          "type": "varchar(7)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "utcdate": {
+          "name": "utcdate",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "utctime": {
+          "name": "utctime",
+          "type": "time",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "whiteelo": {
+          "name": "whiteelo",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "blackelo": {
+          "name": "blackelo",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "whiteratingdiff": {
+          "name": "whiteratingdiff",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "blackratingdiff": {
+          "name": "blackratingdiff",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "default": 0
+        },
+        "whitetitle": {
+          "name": "whitetitle",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "blacktitle": {
+          "name": "blacktitle",
+          "type": "varchar(5)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "variant": {
+          "name": "variant",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "timecontrol": {
+          "name": "timecontrol",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "eco": {
+          "name": "eco",
+          "type": "varchar(10)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "opening": {
+          "name": "opening",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "termination": {
+          "name": "termination",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "moves": {
+          "name": "moves",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

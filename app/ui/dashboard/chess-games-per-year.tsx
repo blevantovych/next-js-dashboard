@@ -1,12 +1,13 @@
-import { fetchGamesPerYear } from "@/app/lib/data";
+import { getYearlyGameCount } from "@/app/db/queries/select";
 import { Card } from "@/app/ui/dashboard/cards";
 
 export default async function GamesOverYears() {
-  const chess_games = await fetchGamesPerYear();
+  const playerName = "bodya17";
+  const chess_games = await getYearlyGameCount(playerName);
   return (
     <>
-      {chess_games.rows.map(({ count, year }) => (
-        <Card title={year} value={count} />
+      {chess_games.map(({ count, year }) => (
+        <Card title={year.toString()} value={count} />
       ))}
     </>
   );

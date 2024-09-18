@@ -1,12 +1,12 @@
 import { lusitana } from "@/app/ui/fonts";
-import { fetchOpenings } from "@/app/lib/data";
+import { getTopOpenings } from "@/app/db/queries/select";
 
 export default async function Page({
   params,
 }: {
   params: { playerName: string };
 }) {
-  const openings = await fetchOpenings(params.playerName);
+  const openings = await getTopOpenings (params.playerName);
 
   return (
     <main className="p-6 min-h-screen">
@@ -17,7 +17,7 @@ export default async function Page({
           Popular Openings
         </h1>
         <ul className="space-y-4">
-          {openings.rows.map(({ opening, count }) => (
+          {openings.map(({ opening, count }) => (
             <li
               key={opening}
               className="flex justify-between items-center bg-gray-50 p-4 m-4 rounded-lg shadow-sm hover:bg-gray-100 transition"

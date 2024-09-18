@@ -22,6 +22,11 @@ const links = [
     icon: ChevronUpIcon,
   },
   {
+    name: "Rating progression",
+    href: "/dashboard/rating-progression",
+    icon: ChevronUpIcon,
+  },
+  {
     name: "Invoices",
     href: "/dashboard/invoices",
     icon: DocumentDuplicateIcon,

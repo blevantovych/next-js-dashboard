@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS "chess_games" (
+	"id" varchar(10) PRIMARY KEY NOT NULL,
+	"event" varchar(50) NOT NULL,
+	"site" varchar(30) NOT NULL,
+	"date" date NOT NULL,
+	"white" varchar(30) NOT NULL,
+	"black" varchar(30) NOT NULL,
+	"result" varchar(7) NOT NULL,
+	"utcdate" date NOT NULL,
+	"utctime" time NOT NULL,
+	"whiteelo" integer NOT NULL,
+	"blackelo" integer NOT NULL,
+	"whiteratingdiff" integer DEFAULT 0,
+	"blackratingdiff" integer DEFAULT 0,
+	"whitetitle" varchar(5),
+	"blacktitle" varchar(5),
+	"variant" varchar(32) NOT NULL,
+	"timecontrol" varchar(20) NOT NULL,
+	"eco" varchar(10),
+	"opening" varchar(100),
+	"termination" varchar(32) NOT NULL,
+	"moves" jsonb NOT NULL
+);

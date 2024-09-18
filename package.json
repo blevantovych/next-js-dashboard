@@ -12,12 +12,16 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@tailwindcss/forms": "^0.5.7",
     "@tanstack/react-table": "^8.20.5",
+    "@types/pg": "^8.11.10",
     "@vercel/postgres": "^0.8.0",
     "autoprefixer": "10.4.19",
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "date-fns": "4.0.0-beta.1",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.33.0",
+    "drizzle-orm-pg": "^0.16.3",
     "lucide-react": "^0.441.0",
     "next": "15.0.0-canary.56",
     "next-auth": "5.0.0-beta.20",
@@ -38,7 +42,8 @@
     "@types/bcrypt": "^5.0.2",
     "@types/node": "20.14.8",
     "@types/react": "18.3.3",
-    "@types/react-dom": "18.3.0"
+    "@types/react-dom": "18.3.0",
+    "drizzle-kit": "^0.24.2"
   },
   "pnpm": {
     "overrides": {
