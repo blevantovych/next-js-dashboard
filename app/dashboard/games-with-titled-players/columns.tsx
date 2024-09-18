@@ -1,7 +1,7 @@
 "use client";
-import { TitledOpponetStats } from "@/app/lib/data";
+import { getTitledOpponentStats } from "@/app/db/queries/select";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
-import { ColumnDef, Row } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 
 export const getNetWinsClass = (netWinsNumber: number) => {
   if (netWinsNumber > 0) {
@@ -13,7 +13,9 @@ export const getNetWinsClass = (netWinsNumber: number) => {
   }
 };
 
-export const columns: ColumnDef<TitledOpponetStats>[] = [
+export const columns: ColumnDef<
+  Awaited<ReturnType<typeof getTitledOpponentStats>>[number]
+>[] = [
   {
     accessorKey: "opponent_title",
     header: ({ column }) => (
