@@ -13,9 +13,11 @@ export const getNetWinsClass = (netWinsNumber: number) => {
   }
 };
 
-export const columns: ColumnDef<
-  Awaited<ReturnType<typeof getTitledOpponentStats>>[number]
->[] = [
+export type TitledOpponetStats = Awaited<
+  ReturnType<typeof getTitledOpponentStats>
+>[number];
+
+export const columns: ColumnDef<TitledOpponetStats>[] = [
   {
     accessorKey: "opponent_title",
     header: ({ column }) => (

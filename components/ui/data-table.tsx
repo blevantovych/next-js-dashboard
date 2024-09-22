@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import {
+  Cell,
   ColumnDef,
   SortingState,
   flexRender,
@@ -22,11 +23,13 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  renderCell?: (data: Cell<TData, unknown>) => React.ReactNode | JSX.Element;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  renderCell,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const table = useReactTable({
@@ -70,7 +73,12 @@ export function DataTable<TData, TValue>({
               >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    {renderCell
+                      ? renderCell(cell)
+                      : flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
                   </TableCell>
                 ))}
               </TableRow>

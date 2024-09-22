@@ -14,6 +14,9 @@ import {
   getPlayerGamesCount,
   getTitledOpponentStats,
 } from "@/app/db/queries/select";
+import Link from "next/link";
+import { flexRender } from "@tanstack/react-table";
+import { TitledLink } from "./titled-link";
 
 export default async function Page() {
   const playerName = "bodya17";
@@ -77,7 +80,11 @@ export default async function Page() {
 
         <h1 className="m-4">{gamesCount[0].count}</h1>
 
-        <DataTable columns={columns} data={titledOpponentStats} />
+        <DataTable
+          columns={columns}
+          data={titledOpponentStats}
+          renderCell={TitledLink}
+        />
         <Card className="my-4">
           <CardHeader>
             <CardTitle>Hot days</CardTitle>
