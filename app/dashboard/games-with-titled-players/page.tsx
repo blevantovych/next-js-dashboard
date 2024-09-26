@@ -14,8 +14,6 @@ import {
   getPlayerGamesCount,
   getTitledOpponentStats,
 } from "@/app/db/queries/select";
-import Link from "next/link";
-import { flexRender } from "@tanstack/react-table";
 import { TitledLink } from "./titled-link";
 
 export default async function Page() {

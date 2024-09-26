@@ -1,6 +1,15 @@
-import { fetchRevenue } from "@/app/lib/data";
+import { getNotAnalyzedGameIds } from "@/app/db/queries/select";
 
 export default async function Page() {
-  await fetchRevenue();
-  return <p>Customers Page</p>;
+  const games = await getNotAnalyzedGameIds("bodya17");
+  return (
+    <p>
+      {games.map((id) => (
+        <>
+          {id}
+          <br />
+        </>
+      ))}
+    </p>
+  );
 }

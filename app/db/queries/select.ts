@@ -210,3 +210,22 @@ export const getTopOpenings = async (playerName: string) => {
 
   return result;
 };
+
+export const getNotAnalyzedGameIds = async (playerName: string) => {
+  const result = await db
+    .select({
+      gameId: chessGames.id,
+    })
+    .from(chessGames)
+    .where(
+      sql`
+          (${chessGames.white} = ${playerName}
+          OR ${chessGames.black} = ${playerName})
+          AND NOT (moves->0 ? 'e')
+          `
+    )
+    .orderBy(sql`${chessGames.date} DESC`)
+    .limit(1000);
+
+  return result.map(({ gameId }) => gameId);
+};
