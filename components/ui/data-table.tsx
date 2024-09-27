@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Cell,
   ColumnDef,
@@ -23,7 +24,7 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  renderCell?: (data: Cell<TData, unknown>) => React.ReactNode | JSX.Element;
+  renderCell?: (data: Cell<TData, unknown>, searchParams: ReturnType<typeof useSearchParams>) => React.ReactNode | JSX.Element;
 }
 
 export function DataTable<TData, TValue>({
@@ -31,6 +32,7 @@ export function DataTable<TData, TValue>({
   data,
   renderCell,
 }: DataTableProps<TData, TValue>) {
+  const searchParams = useSearchParams();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const table = useReactTable({
     data,
@@ -74,7 +76,7 @@ export function DataTable<TData, TValue>({
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {renderCell
-                      ? renderCell(cell)
+                      ? renderCell(cell, searchParams)
                       : flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

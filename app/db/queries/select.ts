@@ -1,4 +1,4 @@
-import { count, eq, or, sql } from "drizzle-orm";
+import { and, count, eq, gte, or, sql } from "drizzle-orm";
 import { db } from "../db";
 import { SelectGame, chessGames } from "../schema";
 import { start } from "repl";
@@ -30,15 +30,17 @@ export async function getYearlyGameCount(
     .orderBy(sql`date_part('year', ${chessGames.date})`);
 }
 
-export const getTitledOpponentStats = async (
+function getTitledOpponentResults(
   playerName: string,
   event: string,
   startDate: string,
   endDate: string
-) => {
-  const subquery = db.$with("subquery").as(
+) {
+  return db.$with("subquery").as(
     db
       .select({
+        date: chessGames.date,
+        site: chessGames.site,
         opponent_title: sql<string>`
         CASE
           WHEN ${chessGames.white} = ${playerName} THEN ${chessGames.blacktitle}
@@ -70,6 +72,20 @@ export const getTitledOpponentStats = async (
           AND ${chessGames.date} >= ${startDate} AND ${chessGames.date} <= ${endDate}
           `
       )
+  );
+}
+
+export const getTitledOpponentStats = async (
+  playerName: string,
+  event: string,
+  startDate: string,
+  endDate: string
+) => {
+  const subquery = getTitledOpponentResults(
+    playerName,
+    event,
+    startDate,
+    endDate
   );
 
   const result = await db
@@ -230,26 +246,41 @@ export const getNotAnalyzedGameIds = async (playerName: string) => {
           `
     )
     .orderBy(sql`${chessGames.date} DESC`)
-    .limit(1006);
+    .limit(1000);
 
   return result.map(({ gameId }) => gameId);
 };
 
-export const getWins = async (playerName: string) => {
-  const result = await db
+export const getWins = async ({
+  playerName,
+  opponentTitle,
+  event,
+  startDate,
+  endDate,
+}: {
+  playerName: string;
+  opponentTitle: string;
+  event: string;
+  startDate: string;
+  endDate: string;
+}) => {
+  const titledOpponentsResults = getTitledOpponentResults(
+    playerName,
+    event,
+    startDate,
+    endDate
+  );
+  return await db
+    .with(titledOpponentsResults)
     .select({
-      gameId: chessGames.id,
+      site: titledOpponentsResults.site,
     })
-    .from(chessGames)
+    .from(titledOpponentsResults)
     .where(
-      sql`
-          (${chessGames.white} = ${playerName}
-          OR ${chessGames.black} = ${playerName})
-          AND NOT (moves->0 ? 'e')
-          `
+      and(
+        eq(titledOpponentsResults.opponent_title, opponentTitle),
+        eq(titledOpponentsResults.result, "win")
+      )
     )
-    .orderBy(sql`${chessGames.date} DESC`)
-    .limit(1006);
-
-  return result.map(({ gameId }) => gameId);
+    .orderBy(titledOpponentsResults.date);
 };
