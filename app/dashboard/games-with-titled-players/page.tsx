@@ -15,15 +15,25 @@ import {
   getTitledOpponentStats,
 } from "@/app/db/queries/select";
 import { TitledLink } from "./titled-link";
+import DateRangePicker from "./date-range-selector";
 
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams?: { from?: string; to?: string };
+}) {
   const playerName = "bodya17";
-  const startDate = "2022-01-01";
-  const endDate = "2023-01-01";
+  const startDate = searchParams?.from ?? "2024-01-01";
+  const endDate = searchParams?.to ?? "2024-01-30";
   const event = "Rated bullet game";
-  const titledOpponentStats = await getTitledOpponentStats(playerName, event);
+  const titledOpponentStats = await getTitledOpponentStats(
+    playerName,
+    event,
+    startDate,
+    endDate
+  );
   const gamesPerDay = await getDailyStats(playerName, startDate, endDate);
-  const gamesCount = await getPlayerGamesCount(playerName);
+  // const gamesCount = await getPlayerGamesCount(playerName);
 
   return (
     <main>
@@ -75,9 +85,8 @@ export default async function Page() {
             </div>
           ))}
         </div>
-
-        <h1 className="m-4">{gamesCount[0].count}</h1>
-
+        {/* <h1 className="m-4">{gamesCount[0].count}</h1> */}
+        <DateRangePicker />
         <DataTable
           columns={columns}
           data={titledOpponentStats}

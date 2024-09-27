@@ -1,6 +1,7 @@
-import { asc, between, count, eq, or, getTableColumns, sql } from "drizzle-orm";
+import { count, eq, or, sql } from "drizzle-orm";
 import { db } from "../db";
 import { SelectGame, chessGames } from "../schema";
+import { start } from "repl";
 
 export async function getPlayerGamesCount(
   playerName: SelectGame["white"] | SelectGame["black"]
@@ -31,7 +32,9 @@ export async function getYearlyGameCount(
 
 export const getTitledOpponentStats = async (
   playerName: string,
-  event: string
+  event: string,
+  startDate: string,
+  endDate: string
 ) => {
   const subquery = db.$with("subquery").as(
     db
@@ -63,7 +66,9 @@ export const getTitledOpponentStats = async (
       .from(chessGames)
       .where(
         sql`(${chessGames.white} = ${playerName} OR ${chessGames.black} = ${playerName})
-          AND ${chessGames.event} = ${event}`
+          AND ${chessGames.event} = ${event}
+          AND ${chessGames.date} >= ${startDate} AND ${chessGames.date} <= ${endDate}
+          `
       )
   );
 
@@ -225,7 +230,26 @@ export const getNotAnalyzedGameIds = async (playerName: string) => {
           `
     )
     .orderBy(sql`${chessGames.date} DESC`)
-    .limit(1000);
+    .limit(1006);
+
+  return result.map(({ gameId }) => gameId);
+};
+
+export const getWins = async (playerName: string) => {
+  const result = await db
+    .select({
+      gameId: chessGames.id,
+    })
+    .from(chessGames)
+    .where(
+      sql`
+          (${chessGames.white} = ${playerName}
+          OR ${chessGames.black} = ${playerName})
+          AND NOT (moves->0 ? 'e')
+          `
+    )
+    .orderBy(sql`${chessGames.date} DESC`)
+    .limit(1006);
 
   return result.map(({ gameId }) => gameId);
 };
