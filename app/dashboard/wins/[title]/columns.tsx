@@ -1,9 +1,12 @@
 "use client";
+import { getWins } from "@/app/db/queries/select";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 
-export const columns: ColumnDef<any>[] = [
+export type GameInfo = Awaited<ReturnType<typeof getWins>>[number];
+
+export const columns: ColumnDef<GameInfo>[] = [
   {
     accessorKey: "site",
     header: ({ column }) => (
@@ -85,5 +88,4 @@ export const columns: ColumnDef<any>[] = [
   //   ),
   //   accessorKey: "points_percentage",
   // },
-  ,
 ];
