@@ -1,7 +1,10 @@
 "use client";
 import { getTitledOpponentStats } from "@/app/db/queries/select";
 import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, flexRender } from "@tanstack/react-table";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { ReactNode } from "react";
 
 export const getNetWinsClass = (netWinsNumber: number) => {
   if (netWinsNumber > 0) {
@@ -41,6 +44,20 @@ export const columns: ColumnDef<TitledOpponetStats>[] = [
       <DataTableColumnHeader column={column} title="Wins" />
     ),
     accessorKey: "wins",
+    cell: ({ row, column, cell }) => {
+      const searchParams = useSearchParams();
+      if (row.original.opponent_title) {
+        return (
+          <Link
+            href={`${column.id}/${row.original.opponent_title}?${searchParams.toString()}`}
+          >
+            {cell.getValue() as ReactNode}
+          </Link>
+        );
+      } else {
+        return cell.getValue() as ReactNode;
+      }
+    },
   },
   {
     header: ({ column }) => (

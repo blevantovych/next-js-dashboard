@@ -1,8 +1,16 @@
 "use client";
 import { Calendar } from "@/components/ui/calendar";
+import { CalendarIcon } from "@radix-ui/react-icons";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { addDays, format } from "date-fns";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { DateRange, SelectRangeEventHandler } from "react-day-picker";
 
 function formatDate(date: Date) {
@@ -42,17 +50,11 @@ function isValidDate(dateString: string) {
   return true;
 }
 
-function DateRangePicker() {
+function DateRangePicker({ className }: React.HTMLAttributes<HTMLDivElement>) {
   const [range, setRange] = useState<DateRange | undefined>(undefined);
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
-
-  const handleRangeChange: SelectRangeEventHandler = (
-    range: DateRange | undefined
-  ) => {
-    setRange(range);
-  };
 
   const updateParams = () => {
     // const params = new URLSearchParams(searchParams);
@@ -113,12 +115,57 @@ function DateRangePicker() {
     setRange({ from, to });
   }, [searchParams.get("to"), searchParams.get("from")]);
 
+  // return (
+  //   <div>
+  //     <p>
+  //       {range?.from?.toISOString()} {range?.to?.toISOString()}
+  //     </p>
+  //     <Calendar mode="range" selected={range} onSelect={handleRangeChange} />
+  //     <Button className="mb-4" onClick={updateParams}>
+  //       Update table
+  //     </Button>
+  //   </div>
+  // );
+
   return (
-    <div>
-      <p>
-        {range?.from?.toISOString()} {range?.to?.toISOString()}
-      </p>
-      <Calendar mode="range" selected={range} onSelect={handleRangeChange} />
+    <div className="flex gap-2">
+      {/* <div className={cn("grid gap-2", className)}> */}
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            id="date"
+            variant={"outline"}
+            className={cn(
+              "w-[300px] justify-start text-left font-normal",
+              !range && "text-muted-foreground"
+            )}
+          >
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {range?.from ? (
+              range.to ? (
+                <>
+                  {format(range.from, "LLL dd, y")} -{" "}
+                  {format(range.to, "LLL dd, y")}
+                </>
+              ) : (
+                format(range.from, "LLL dd, y")
+              )
+            ) : (
+              <span>Pick a date</span>
+            )}
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="w-auto p-0" align="start">
+          <Calendar
+            initialFocus
+            mode="range"
+            defaultMonth={range?.from}
+            selected={range}
+            onSelect={setRange}
+            numberOfMonths={2}
+          />
+        </PopoverContent>
+      </Popover>
       <Button className="mb-4" onClick={updateParams}>
         Update table
       </Button>

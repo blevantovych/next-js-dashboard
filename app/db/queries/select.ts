@@ -41,29 +41,31 @@ function getTitledOpponentResults(
       .select({
         date: chessGames.date,
         site: chessGames.site,
+        white: chessGames.white,
+        black: chessGames.black,
         opponent_title: sql<string>`
-        CASE
-          WHEN ${chessGames.white} = ${playerName} THEN ${chessGames.blacktitle}
-          ELSE ${chessGames.whitetitle}
-        END
-      `.as("opponent_title"),
+            CASE
+              WHEN ${chessGames.white} = ${playerName} THEN ${chessGames.blacktitle}
+              ELSE ${chessGames.whitetitle}
+            END
+          `.as("opponent_title"),
         result: sql<string>`
-        CASE
-          WHEN ${chessGames.white} = ${playerName} AND ${chessGames.result} = '1-0' THEN 'win'
-          WHEN ${chessGames.white} = ${playerName} AND ${chessGames.result} = '0-1' THEN 'loss'
-          WHEN ${chessGames.white} = ${playerName} AND ${chessGames.result} = '1/2-1/2' THEN 'draw'
-          WHEN ${chessGames.black} = ${playerName} AND ${chessGames.result} = '0-1' THEN 'win'
-          WHEN ${chessGames.black} = ${playerName} AND ${chessGames.result} = '1-0' THEN 'loss'
-          WHEN ${chessGames.result} = '1/2-1/2' THEN 'draw'
-          ELSE NULL
-        END
-      `.as("result"),
+            CASE
+              WHEN ${chessGames.white} = ${playerName} AND ${chessGames.result} = '1-0' THEN 'win'
+              WHEN ${chessGames.white} = ${playerName} AND ${chessGames.result} = '0-1' THEN 'loss'
+              WHEN ${chessGames.white} = ${playerName} AND ${chessGames.result} = '1/2-1/2' THEN 'draw'
+              WHEN ${chessGames.black} = ${playerName} AND ${chessGames.result} = '0-1' THEN 'win'
+              WHEN ${chessGames.black} = ${playerName} AND ${chessGames.result} = '1-0' THEN 'loss'
+              WHEN ${chessGames.result} = '1/2-1/2' THEN 'draw'
+              ELSE NULL
+            END
+          `.as("result"),
         opponent_rating: sql<number>`
-        CASE
-          WHEN ${chessGames.white} = ${playerName} THEN ${chessGames.blackelo}
-          ELSE ${chessGames.whiteelo}
-        END
-      `.as("opponent_rating"),
+            CASE
+              WHEN ${chessGames.white} = ${playerName} THEN ${chessGames.blackelo}
+              ELSE ${chessGames.whiteelo}
+            END
+          `.as("opponent_rating"),
       })
       .from(chessGames)
       .where(
@@ -274,6 +276,9 @@ export const getWins = async ({
     .with(titledOpponentsResults)
     .select({
       site: titledOpponentsResults.site,
+      white: titledOpponentsResults.white,
+      black: titledOpponentsResults.black,
+      date: titledOpponentsResults.date,
     })
     .from(titledOpponentsResults)
     .where(

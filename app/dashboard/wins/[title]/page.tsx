@@ -1,4 +1,6 @@
 import { getWins } from "@/app/db/queries/select";
+import { DataTable } from "@/components/ui/data-table";
+import { columns } from "./columns";
 
 export default async function Page({
   searchParams,
@@ -19,20 +21,5 @@ export default async function Page({
     startDate,
     endDate,
   });
-  return (
-    <>
-      <h1>
-        {wins.length} wins with {params.title}
-      </h1>
-      <ul>
-        {wins.map(({ site }) => (
-          <li>
-            <a href={site} target="_blank">
-              {site}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </>
-  );
+  return <DataTable data={wins} columns={columns} />;
 }

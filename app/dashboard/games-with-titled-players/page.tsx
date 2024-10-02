@@ -87,11 +87,7 @@ export default async function Page({
         </div>
         {/* <h1 className="m-4">{gamesCount[0].count}</h1> */}
         <DateRangePicker />
-        <DataTable
-          columns={columns}
-          data={titledOpponentStats}
-          renderCell={TitledLink}
-        />
+        <DataTable columns={columns} data={titledOpponentStats} />
         <Card className="my-4">
           <CardHeader>
             <CardTitle>Hot days</CardTitle>

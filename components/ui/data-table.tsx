@@ -24,7 +24,10 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  renderCell?: (data: Cell<TData, unknown>, searchParams: ReturnType<typeof useSearchParams>) => React.ReactNode | JSX.Element;
+  renderCell?: (
+    data: Cell<TData, unknown>,
+    searchParams: ReturnType<typeof useSearchParams>
+  ) => React.ReactNode | JSX.Element;
 }
 
 export function DataTable<TData, TValue>({
